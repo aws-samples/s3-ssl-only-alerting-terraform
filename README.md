@@ -6,16 +6,20 @@ Code for solution on s3-ssl-only alerting and remediation
 
 - [s3-ssl-only-alerting](#s3-ssl-only-alerting)
   - [Table of Contents](#table-of-contents)
-    - [Description](#description)
-      - [Main Features](#main-features)
-    - [Prerequisites](#prerequisites)
-    - [Variables](#variables)
-    - [Example of usage](#example-of-usage)
-    - [Tests](#tests)
+  - [Description](#description)
+    - [Main Features](#main-features)
+  - [Prerequisites](#prerequisites)
+  - [Variables](#variables)
+  - [Example of usage](#example-of-usage)
+  - [Tests](#tests)
 
-### Description
+## Description
 
 This module setup up a check and remediation strategy for missing ssl-only access on S3 Bucket policy.
+
+The following diagram applies to the current solution.
+
+![Diagram](.img/s3-ssl-only-diagram.png)
 
 It uses AWS Managed Config rule [S3_BUCKET_SSL_REQUESTS_ONLY](https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-ssl-requests-only.html) to monitor the S3 buckets and trigger a lambda function which will put a ssl-only bucket policy
 on "NON_COMPLIANT" buckets.
@@ -51,24 +55,24 @@ The policy is
 > Pay attention:
 this module is meant to be used as standalone module.
 
-#### Main Features
+### Main Features
 
 - It is possible to define a list of buckets to be excluded from the fix.
   They will continue to appear as "NOT_COMPLIANT" in AWS Config Dashboard;
 - it is possible to pass the name of an already existing AWS Config rule. E.g. in case that `S3_BUCKET_SSL_REQUESTS_ONLY` is already turned on by another service (Security Hub).
 
-### Prerequisites
+## Prerequisites
 
-This module expects that [AWS Config](https://aws.amazon.com/config/) is already up and running in the region where
-the rules will be deployed and the rule `s3-bucket-ssl-requests-only` should be already enabled.
+This module expects that [AWS Config](https://aws.amazon.com/config/) is **already up and running in the region** where
+the rules will be deployed and the rule `s3-bucket-ssl-requests-only` should be **already enabled**.
 
 The setup can be easily done by following the official [documentation](https://docs.aws.amazon.com/config/latest/developerguide/setting-up-aws-config-rules-with-console.html).
 
-### Variables
+## Variables
 
 The available variables are described in [variables.tf](./variables.tf) file.
 
-### Example of usage
+## Example of usage
 
 In this example we are going to deploy the remediation lambda for missing s3 ssl-only policy
 using an already running AWS Config rule.
@@ -95,7 +99,7 @@ terraform apply
 > Pay attention:
 you should first modify the `buckets_exclusion_list` and `region` in accordance to your requirements.
 
-### Tests
+## Tests
 
 Tests can be performed on the `Lambda` function code and on `Terraform` Code.
 These tests are meant to be run locally.
