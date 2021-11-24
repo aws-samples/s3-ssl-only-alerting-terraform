@@ -23,6 +23,7 @@ resource "aws_lambda_function" "remediation_lambda" {
   publish                        = true
   runtime                        = "python3.8"
   timeout                        = 30
+  layers = [ aws_serverlessapplicationrepository_cloudformation_stack.deploy_sar_stack.outputs.LayerVersionArn ]
   reserved_concurrent_executions = -1
   tracing_config {
     mode = "Active"

@@ -4,14 +4,14 @@ Code for solution on s3-ssl-only alerting and remediation
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-  - [Description](#description)
-    - [Main Features](#main-features)
-    - [Architecture Diagram](#architecture-diagram)
-  - [Prerequisites](#prerequisites)
-  - [Variables](#variables)
-  - [Example of usage](#example-of-usage)
-  - [Tests](#tests)
+- [s3-ssl-only-alerting](#s3-ssl-only-alerting)
+  - [Table of Contents](#table-of-contents)
+    - [Description](#description)
+      - [Main Features](#main-features)
+    - [Prerequisites](#prerequisites)
+    - [Variables](#variables)
+    - [Example of usage](#example-of-usage)
+    - [Tests](#tests)
 
 ### Description
 
@@ -59,8 +59,10 @@ this module is meant to be used as standalone module.
 
 ### Prerequisites
 
-This module expects that AWS Config is already up and running in the region where
-the rules will be deployed.
+This module expects that [AWS Config](https://aws.amazon.com/config/) is already up and running in the region where
+the rules will be deployed and the rule `s3-bucket-ssl-requests-only` should be already enabled.
+
+The setup can be easily done by following the official [documentation](https://docs.aws.amazon.com/config/latest/developerguide/setting-up-aws-config-rules-with-console.html).
 
 ### Variables
 
@@ -75,7 +77,6 @@ using an already running AWS Config rule.
 module "deploy_s3_ssl_only_remediation" {
   buckets_exclusion_list = "bucket_a,bucket_b",
   config_rule_name       = "s3-bucket-ssl-requests-only-already-on",
-  custom_tags            = var.tags
   source                 = "./modules/s3_https_remediation"
 }
 ```

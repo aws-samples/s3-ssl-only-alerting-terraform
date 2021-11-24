@@ -1,17 +1,6 @@
 variable "custom_tags" {
   type = map(any)
-}
-
-variable "account_id" {
-  type        = string
-  description = "Account ID where the resource will be deployed"
-  default     = ""
-}
-
-variable "region" {
-  type        = string
-  description = "AWS Region where the resources will be deployed"
-  default     = ""
+  default = {}
 }
 
 variable "config_rule_name" {
@@ -36,4 +25,10 @@ variable "buckets_exclusion_list" {
   description = "CSV list of buckets names to be excluded from remediation"
   type        = string
   default     = ""
+}
+
+variable "aws_powertools_version" {
+  type        = string
+  default     = "1.20.2"
+  description = "The AWS Powertools release version"
 }
