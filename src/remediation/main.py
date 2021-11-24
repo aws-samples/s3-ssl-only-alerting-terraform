@@ -1,18 +1,15 @@
 from botocore import exceptions
 import boto3
 import json
-import logging
 import os
 import re
+from aws_lambda_powertools import Logger
 
 
 ACTIONABLE_STATUS = 'NON_COMPLIANT'
 buckets_excluded_list = os.getenv('BUCKETS_EXCLUSION_LIST', '')
-logger = logging.getLogger()
+logger = Logger(service="ssl_s3_only_remediation_lambda")
 s3 = boto3.client('s3')
-
-logger.setLevel(logging.INFO)
-
 
 def s3_ssl_only_policy(bucket):
     return {
@@ -101,14 +98,12 @@ def check_if_policy_exists(resource_name, aws_account_id=None, client=None):
         else:
             raise error
 
-
 def get_not_compliant_resources(evaluations):
     return [
         evaluation
         for evaluation in evaluations
         if evaluation['complianceType'] == ACTIONABLE_STATUS
     ]
-
 
 def lambda_handler(event, context):
     '''Lambda to set the SSLOnly bucket policy

@@ -1,0 +1,8 @@
+.pytest_cache
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+__pycache__
+src/remediation-lambda.zip
+terraform.tfstate
+terraform.tfstate.backup
