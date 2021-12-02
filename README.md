@@ -15,7 +15,7 @@ Code for solution on s3-ssl-only alerting and remediation
 
 ## Description
 
-This module setup up a check and remediation strategy for missing ssl-only access on S3 Bucket policy.
+This Terraform module sets up a check and remediation strategy for missing ssl-only access on S3 Bucket policy.
 
 The following diagram applies to the current solution.
 
