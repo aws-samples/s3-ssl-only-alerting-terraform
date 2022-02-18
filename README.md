@@ -17,6 +17,10 @@ Code for solution on s3-ssl-only alerting and remediation
 
 This Terraform module sets up a check and remediation strategy for missing ssl-only access on S3 Bucket policy.
 
+The following diagram applies to the current solution.
+
+![Diagram](.img/s3-ssl-only-diagram.png)
+
 It uses AWS Managed Config rule [S3_BUCKET_SSL_REQUESTS_ONLY](https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-ssl-requests-only.html) to monitor the S3 buckets and trigger a lambda function which will put a ssl-only bucket policy
 on "NON_COMPLIANT" buckets.
 
