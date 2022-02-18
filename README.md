@@ -79,8 +79,8 @@ using an already running AWS Config rule.
 
 ```yaml
 module "deploy_s3_ssl_only_remediation" {
-  buckets_exclusion_list = "bucket_a,bucket_b",
-  config_rule_name       = "s3-bucket-ssl-requests-only-already-on",
+  buckets_exclusion_list = "bucket_a,bucket_b"
+  config_rule_name       = "s3-bucket-ssl-requests-only-already-on"
   source                 = "./modules/s3_https_remediation"
 }
 ```
