@@ -6,3 +6,5 @@ __pycache__
 src/remediation-lambda.zip
 terraform.tfstate
 terraform.tfstate.backup
+bandit.xml
+checkov_results.xml

@@ -15,6 +15,12 @@ variable "lambda_logs_retention" {
   default     = "180"
 }
 
+variable "lambda_runtime" {
+  type = string
+  description = "Lambda Runtime version"
+  default = "python3.8"
+}
+
 variable "alarm_actions" {
   type        = list(string)
   description = "List of resource (ARN) to used as targets for the CW Metric Alarm"

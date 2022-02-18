@@ -1,0 +1,7 @@
+evaluate-variables: true
+framework: terraform
+skip-path:
+  - example
+output: cli
+download-external-modules: true
+external-modules-download-path: .external_modules

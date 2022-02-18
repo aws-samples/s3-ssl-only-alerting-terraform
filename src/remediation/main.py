@@ -8,7 +8,7 @@ from aws_lambda_powertools import Logger
 
 ACTIONABLE_STATUS = 'NON_COMPLIANT'
 buckets_excluded_list = os.getenv('BUCKETS_EXCLUSION_LIST', '')
-logger = Logger(service="ssl_s3_only_remediation_lambda")
+logger = Logger(service="ssl_s3_only_remediation_lambda", level=os.getenv("LOG_LEVEL", "INFO"))
 s3 = boto3.client('s3')
 
 def s3_ssl_only_policy(bucket):
@@ -36,18 +36,21 @@ def set_compliant_policy(resources, exclusion_list=[], aws_account_id=None, clie
 
         for exclusion_regex in exclusion_list:
             if re.compile(exclusion_regex).match(resource_name):
-                logger.info(
+                logger.debug(
                     f'Bucket {resource_name} in exclusion list {exclusion_list}, skip')
+                logger.info(
+                    f'Bucket found in exclusion list, skip')
                 successes.append(resource_name)
 
         if resource_name in successes:
             continue
 
         try:
-            logger.info(
+            logger.info("Setting policy")
+            logger.debug(
                 f'''Setting policy on bucket {resource_name}''')
             apply_bucket_policy(resource_name, aws_account_id, client)
-            logger.info(f'Apply SSLOnly policy to bucket {resource_name}')
+            logger.debug(f'Apply SSLOnly policy to bucket {resource_name}')
             successes.append(resource_name)
         except Exception:
             logger.exception(
@@ -73,6 +76,8 @@ def apply_bucket_policy(resource_name, aws_account_id=None, client=None):
                 ExpectedBucketOwner=aws_account_id,
             )
             logger.info(
+                f'Merging policies.')
+            logger.debug(
                 f'Bucket {resource_name} with policy {bucket_policy} already present, merge')
         else:
             client.put_bucket_policy(
@@ -118,10 +123,12 @@ def lambda_handler(event, context):
     request_parameters = details['requestParameters']
     evaluations = request_parameters['evaluations']
     aws_account_id = context.invoked_function_arn.split(':')[4]
-    exclusion_list = [bucket.strip()
-                      for bucket in buckets_excluded_list.split(',')]
+    
+    exclusion_list = []
+    if buckets_excluded_list != "":
+        exclusion_list = [bucket.strip() for bucket in buckets_excluded_list.split(",")]
 
     not_compliant_resource = get_not_compliant_resources(evaluations)
-    logger.info(f'NOT_COMPLIANT resources {not_compliant_resource}')
+    logger.debug(f'NOT_COMPLIANT resources {not_compliant_resource}')
     set_compliant_policy(not_compliant_resource,
                          exclusion_list, aws_account_id, s3)

@@ -37,14 +37,21 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_remediation_lambda_ev
 }
 
 data "aws_iam_policy_document" "allow_put_policy_on_lambda" {
-  #checkov:skip=CKV_AWS_109: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
-  # Policy applicable to all the s3 buckets
   statement {
     sid       = "AllowPutPolicyOnS3"
-    resources = ["*"]
+    resources = ["arn:aws:s3:::*", "arn:aws:s3:::*/*"]
     actions = ["s3:PutBucketPolicy",
     "s3:GetBucketPolicy"]
-
+  }
+  statement {
+    sid = "AllowEncryptionDecryption"
+    resources = [ aws_kms_alias.lambda_encryption.target_key_arn ]
+    actions = [ "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey" 
+    ]
   }
 }
 

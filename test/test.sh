@@ -15,10 +15,11 @@ fi
 # Run security checks and unit tests on python packages
 cd ..
 # Run pytest
-pytest
-bandit -r src -ll --format xml -o test/bandit.xml
+pytest -s
+# Run bandit
+bandit -r src -c .bandit.yaml -ll --format xml -o test/bandit.xml
 # Run Checkov
-checkov -d . --quiet --config-file ../.checkov.yaml
+checkov -d . --quiet --config-file .checkov.yaml -o junitxml > test/checkov_results.xml
 # Run terratest
 cd -
 go test terratest_test.go -timeout 10m -v

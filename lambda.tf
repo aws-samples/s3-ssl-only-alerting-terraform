@@ -7,8 +7,19 @@ locals {
 data "archive_file" "remediation_lambda_zip" {
   type        = "zip"
   output_path = local.lambda_zip_path
-  source_dir  = "${path.module}/src/remediation"
+  source_file  = "${path.module}/src/remediation/main.py"
 }
+
+resource "aws_kms_key" "lambda_encryption" {
+  description = "KMS key for environment variables encryption"
+  enable_key_rotation = true
+}
+
+resource "aws_kms_alias" "lambda_encryption" {
+  name          = "alias/lambda-encryption"
+  target_key_id = aws_kms_key.lambda_encryption.key_id
+}
+
 
 resource "aws_lambda_function" "remediation_lambda" {
   #checkov:skip=CKV_AWS_117/Lambda in VPC
@@ -21,7 +32,7 @@ resource "aws_lambda_function" "remediation_lambda" {
   handler                        = "main.lambda_handler"
   source_code_hash               = data.archive_file.remediation_lambda_zip.output_base64sha256
   publish                        = true
-  runtime                        = "python3.8"
+  runtime                        = var.lambda_runtime
   timeout                        = 30
   layers = [ aws_serverlessapplicationrepository_cloudformation_stack.deploy_sar_stack.outputs.LayerVersionArn ]
   reserved_concurrent_executions = -1
@@ -29,9 +40,12 @@ resource "aws_lambda_function" "remediation_lambda" {
     mode = "Active"
   }
 
+  kms_key_arn = aws_kms_alias.lambda_encryption.target_key_arn
+
   environment {
     variables = {
-    "BUCKETS_EXCLUSION_LIST" = var.buckets_exclusion_list }
+    "BUCKETS_EXCLUSION_LIST" = var.buckets_exclusion_list,
+    "LOG_LEVEL": "INFO" }
   }
 
   tags = var.custom_tags
@@ -91,3 +105,4 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttling" {
   alarm_actions             = var.alarm_actions
   tags                      = var.custom_tags
 }
+
