@@ -20,6 +20,12 @@ pytest -s
 bandit -r src -c .bandit.yaml -ll --format xml -o test/bandit.xml
 # Run Checkov
 checkov -d . --quiet --config-file .checkov.yaml -o junitxml > test/checkov_results.xml
-# Run terratest
+# Initialize test module
 cd -
+go mod init s3-ssl-only-alerting/test
+go mod tidy
+# Run terratest
 go test terratest_test.go -timeout 10m -v
+# Cleanup test module
+rm -f go.mod
+rm -f go.sum

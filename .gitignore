@@ -3,8 +3,10 @@
 .terraform.lock.hcl
 .terraform.tfstate.lock.info
 __pycache__
+bandit.xml
+checkov_results.xml
 src/remediation-lambda.zip
 terraform.tfstate
 terraform.tfstate.backup
-bandit.xml
-checkov_results.xml
+test/go.mod
+test/go.sum
